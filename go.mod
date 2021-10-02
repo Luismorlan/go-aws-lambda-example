@@ -7,4 +7,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.8.2
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.9.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
+	google.golang.org/protobuf v1.27.1 // indirect
 )

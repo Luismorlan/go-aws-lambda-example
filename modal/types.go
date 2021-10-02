@@ -1,5 +1,9 @@
 package modal
 
-type MyEvent struct {
-	Name string `json:"name"`
+type DataCollectorRequest struct {
+	SerializedJob []byte
+}
+
+type DataCollectorResponse struct {
+	SerializedJob []byte
 }

@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"playground/modal"
+	"playground/protocol"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
+	"google.golang.org/protobuf/proto"
 )
 
 func main() {
@@ -24,10 +26,17 @@ func main() {
 	ctx := context.Background()
 	funcName := "testing_func"
 
-	me := modal.MyEvent{
-		Name: "world",
+	job := &protocol.PanopticJob{}
+	job.JobId = "test_id"
+	marshall, err := proto.Marshal(job)
+	if err != nil {
+		panic(err)
 	}
-	payload, err := json.Marshal(me)
+
+	req := modal.DataCollectorRequest{
+		SerializedJob: marshall,
+	}
+	payload, err := json.Marshal(req)
 	if err != nil {
 		panic(err)
 	}
@@ -41,6 +50,18 @@ func main() {
 		panic(err)
 	}
 
-	wording := string(res.Payload)
-	fmt.Println(wording)
+	var collectorResponse modal.DataCollectorResponse
+
+	err = json.Unmarshal(res.Payload, &collectorResponse)
+	if err != nil {
+		panic(err)
+	}
+
+	resJob := &protocol.PanopticJob{}
+	err = proto.Unmarshal(collectorResponse.SerializedJob, resJob)
+
+	fmt.Println(resJob.String())
+	if err != nil {
+		panic(err)
+	}
 }
